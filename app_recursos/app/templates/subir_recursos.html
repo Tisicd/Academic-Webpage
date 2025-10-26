@@ -1,0 +1,557 @@
+{% extends "layout.html" %}
+
+{% block title %}Subir Recursos{% endblock %}
+
+{% block content %}
+<!-- Header Start -->
+<div class="container-fluid bg-primary py-5 mb-5 page-header">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1 class="display-3 text-white animated slideInDown">Subir Recursos</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+
+<!-- Mensaje y botones para añadir recursos -->
+{% if current_user.is_authenticated and current_user.tipo_usuario == 'docente' %}
+<div class="container my-5 text-center">
+    <h3>¿Qué deseas subir el día de hoy?</h3>
+    <div class="my-4">
+        <button class="btn btn-outline-primary btn-md mx-2" data-bs-toggle="modal" data-bs-target="#uploadLinkModal">Enlaces</button>
+        <button class="btn btn-outline-primary btn-md mx-2" data-bs-toggle="modal" data-bs-target="#uploadFileModal">Archivos</button>
+        <button class="btn btn-outline-primary btn-md mx-2" data-bs-toggle="modal" data-bs-target="#uploadVideoModal">Videos</button>
+    </div>
+</div>
+
+<!-- Modal para subir Enlace -->
+<div class="modal fade" id="uploadLinkModal" tabindex="-1" aria-labelledby="uploadLinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadLinkModalLabel">Añadir Nuevo Enlace</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadLinkForm" action="{{ url_for('app_bp.subir_enlace') }}" method="POST">
+                    {{ link_form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label class="form-label">Título del Enlace</label>
+                        {{ link_form.title(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">URL del Enlace</label>
+                        {{ link_form.url(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción del Enlace</label>
+                        {{ link_form.description(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Categoría</label>
+                        {{ link_form.categoria(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Carrera</label>
+                        {{ link_form.carrera(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Materia</label>
+                        {{ link_form.materia(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Disponibilidad</label>
+                        {{ link_form.disponibilidad(class="form-select") }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Añadir Enlace</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para subir Archivo -->
+<div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadFileModalLabel">Subir Nuevo Recurso PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadFileForm" action="{{ url_for('app_bp.subir_archivo') }}" method="POST" enctype="multipart/form-data">
+                    {{ file_form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label class="form-label">Título del Archivo</label>
+                        {{ file_form.title(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción del Archivo</label>
+                        {{ file_form.description(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Seleccionar archivo PDF</label>
+                        {{ file_form.archivo(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Categoría</label>
+                        {{ file_form.categoria(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Carrera</label>
+                        {{ file_form.carrera(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Materia</label>
+                        {{ file_form.materia(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Disponibilidad</label>
+                        {{ file_form.disponibilidad(class="form-select") }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Subir Archivo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para subir Video -->
+<div class="modal fade" id="uploadVideoModal" tabindex="-1" aria-labelledby="uploadVideoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadVideoModalLabel">Añadir Nuevo Video de YouTube</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadVideoForm" action="{{ url_for('app_bp.subir_video') }}" method="POST">
+                    {{ video_form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label class="form-label">Título del Video</label>
+                        {{ video_form.title(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">URL del Video de YouTube</label>
+                        {{ video_form.youtube_url(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción del Video</label>
+                        {{ video_form.description(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Categoría</label>
+                        {{ video_form.categoria(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Carrera</label>
+                        {{ video_form.carrera(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Materia</label>
+                        {{ video_form.materia(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Disponibilidad</label>
+                        {{ video_form.disponibilidad(class="form-select") }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Añadir Video</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+<!-- Lista de recursos para docentes -->
+{% if current_user.is_authenticated and current_user.tipo_usuario == 'docente' %}
+<div class="container my-5 text-center">
+    <h3>Mis recursos subidos</h3>
+    <div class="my-4">
+        <button class="btn btn-outline-primary btn-md mx-2" onclick="mostrarRecursos('links')">Mis Links</button>
+        <button class="btn btn-outline-primary btn-md mx-2" onclick="mostrarRecursos('archivos')">Mis Archivos</button>
+        <button class="btn btn-outline-primary btn-md mx-2" onclick="mostrarRecursos('videos')">Mis Videos</button>
+        <button class="btn btn-outline-primary btn-md mx-2" onclick="mostrarRecursos('chatbot')">Mis Chatbots</button>
+    </div>
+</div>
+
+<div id="recursosContainer" class="container my-5">
+    <div id="misRecursos" class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Tipo de Recurso</th>
+                    <th>Categoría</th>
+                    <th>Carrera</th>
+                    <th>Materia</th>
+                    <th>Subido por</th>
+                    <th>Fecha de Subida</th>
+                    <th>Disponibilidad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Recursos tipo Enlace -->
+                {% for recurso in recursos_links %}
+                <tr id="recurso-{{ recurso.id }}" data-resource-type="links" data-category="{{ recurso.categoria }}" style="display: none;">
+                    <td class="recurso-title">{{ recurso.title }}</td>
+                    <td class="recurso-description">{{ recurso.description }}</td>
+                    <td>Link</td>
+                    <td>{{ recurso.categoria }}</td>
+                    <td>{{ recurso.carrera.nombre if recurso.carrera else 'N/A' }}</td>
+                    <td>{{ recurso.materia.nombre if recurso.materia else 'N/A' }}</td>
+                    <td>{{ recurso.usuario.nombre }} {{ recurso.usuario.apellido }}</td>
+                    <td>{{ recurso.uploaded_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ recurso.disponibilidad }}</td>
+                    <td>
+                        <!-- Formulario para eliminar con token CSRF incluido -->
+                        <form action="{{ url_for('app_bp.eliminar_recurso', recurso_id=recurso.id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este recurso?');" style="display: inline;">
+                            {{ edit_link_forms[recurso.id].hidden_tag() }} <!-- Esto agrega el token CSRF al formulario -->
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                        
+                        <!-- Botón de editar para abrir el modal -->
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editLinkModal{{ recurso.id }}">Editar</button>
+                    </td>
+                </tr>
+
+                <!-- Modal para editar Enlace -->
+                <div class="modal fade" id="editLinkModal{{ recurso.id }}" tabindex="-1" aria-labelledby="editLinkModalLabel{{ recurso.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editLinkModalLabel{{ recurso.id }}">Editar Enlace</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editLinkForm-{{ recurso.id }}" action="{{ url_for('app_bp.editar_recurso', recurso_id=recurso.id) }}" method="POST">
+                                    {{ edit_link_forms[recurso.id].hidden_tag() }}
+                                    <div class="mb-3">
+                                        <label class="form-label">Título</label>
+                                        {{ edit_link_forms[recurso.id].title(class="form-control recurso-title") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Descripción</label>
+                                        {{ edit_link_forms[recurso.id].description(class="form-control recurso-description") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">URL del Enlace</label>
+                                        {{ edit_link_forms[recurso.id].url(class="form-control recurso-link") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Categoría</label>
+                                        {{ edit_link_forms[recurso.id].categoria(class="form-select") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Carrera</label>
+                                        {{ edit_link_forms[recurso.id].carrera(class="form-select") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Materia</label>
+                                        {{ edit_link_forms[recurso.id].materia(class="form-select") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Disponibilidad</label>
+                                        {{ edit_link_forms[recurso.id].disponibilidad(class="form-select") }}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Recursos tipo Archivo -->
+                {% for recurso in recursos_archivos %}
+                <tr id="recurso-{{ recurso.id }}" data-resource-type="archivos" style="display: none;">
+                    <td class="recurso-title">{{ recurso.title }}</td>
+                    <td class="recurso-description">{{ recurso.description }}</td>
+                    <td>Archivo</td>
+                    <td>{{ recurso.categoria }}</td>
+                    <td>{{ recurso.carrera.nombre if recurso.carrera else 'N/A' }}</td>
+                    <td>{{ recurso.materia.nombre if recurso.materia else 'N/A' }}</td>
+                    <td>{{ recurso.usuario.nombre }} {{ recurso.usuario.apellido }}</td>
+                    <td>{{ recurso.uploaded_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ recurso.disponibilidad }}</td>
+                    <td>
+                        <form action="{{ url_for('app_bp.eliminar_recurso', recurso_id=recurso.id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este recurso?');">
+                            {{ edit_file_forms[recurso.id].hidden_tag() }} <!-- Esto agrega el token CSRF al formulario -->
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                        <a href="{{ url_for('app_bp.download_pdf', pdf_id=recurso.id) }}" class="btn btn-info btn-sm">Descargar</a>
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editFileModal{{ recurso.id }}">Editar</button>
+                    </td>
+                </tr>
+
+                <!-- Modal para editar Archivo -->
+                <div class="modal fade" id="editFileModal{{ recurso.id }}" tabindex="-1" aria-labelledby="editFileModalLabel{{ recurso.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editFileModalLabel{{ recurso.id }}">Editar Archivo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editFileForm-{{ recurso.id }}" action="{{ url_for('app_bp.editar_recurso', recurso_id=recurso.id) }}" method="POST">
+                                    {{ edit_file_forms[recurso.id].hidden_tag() }}
+                                    <div class="mb-3">
+                                        <label class="form-label">Título</label>
+                                        {{ edit_file_forms[recurso.id].title(class="form-control") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Descripción</label>
+                                        {{ edit_file_forms[recurso.id].description(class="form-control") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Categoría</label>
+                                        {{ edit_file_forms[recurso.id].categoria(class="form-select") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Carrera</label>
+                                        {{ edit_file_forms[recurso.id].carrera(class="form-select") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Materia</label>
+                                        {{ edit_file_forms[recurso.id].materia(class="form-select") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Disponibilidad</label>
+                                        {{ edit_file_forms[recurso.id].disponibilidad(class="form-select") }}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Recursos tipo Video -->
+                {% for recurso in recursos_videos %}
+                <tr id="recurso-{{ recurso.id }}" data-resource-type="videos" style="display: none;">
+                    <td class="recurso-title">{{ recurso.title }}</td>
+                    <td class="recurso-description">{{ recurso.description }}</td>
+                    <td>Video</td>
+                    <td>{{ recurso.categoria }}</td>
+                    <td>{{ recurso.carrera.nombre if recurso.carrera else 'N/A' }}</td>
+                    <td>{{ recurso.materia.nombre if recurso.materia else 'N/A' }}</td>
+                    <td>{{ recurso.usuario.nombre }} {{ recurso.usuario.apellido }}</td>
+                    <td>{{ recurso.uploaded_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ recurso.disponibilidad }}</td>
+                    <td>
+                        <form action="{{ url_for('app_bp.eliminar_recurso', recurso_id=recurso.id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este recurso?');">
+                            {{ edit_video_forms[recurso.id].hidden_tag() }} <!-- Esto agrega el token CSRF al formulario -->
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editVideoModal{{ recurso.id }}">Editar</button>
+                    </td>
+                </tr>
+
+                <!-- Modal para editar Video -->
+                <div class="modal fade" id="editVideoModal{{ recurso.id }}" tabindex="-1" aria-labelledby="editVideoModalLabel{{ recurso.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editVideoModalLabel{{ recurso.id }}">Editar Video</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editVideoForm-{{ recurso.id }}" action="{{ url_for('app_bp.editar_recurso', recurso_id=recurso.id) }}" method="POST">
+                                    {{ edit_video_forms[recurso.id].hidden_tag() }}
+                                    <div class="mb-3">
+                                        <label class="form-label">Título</label>
+                                        {{ edit_video_forms[recurso.id].title(class="form-control") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Descripción</label>
+                                        {{ edit_video_forms[recurso.id].description(class="form-control") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">URL del Video</label>
+                                        {{ edit_video_forms[recurso.id].youtube_url(class="form-control") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Categoría</label>
+                                        {{ edit_video_forms[recurso.id].categoria(class="form-select") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Carrera</label>
+                                        {{ edit_video_forms[recurso.id].carrera(class="form-select") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Materia</label>
+                                        {{ edit_video_forms[recurso.id].materia(class="form-select") }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Disponibilidad</label>
+                                        {{ edit_video_forms[recurso.id].disponibilidad(class="form-select") }}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    $(document).ready(function() {
+        // Al hacer clic en "Guardar Cambios" en cualquier modal de edición
+        $("form[id^='editLinkForm'], form[id^='editFileForm'], form[id^='editVideoForm']").on('submit', function(event) {
+            event.preventDefault();  // Prevenir la recarga de la página
+
+            // Recoger el formulario específico enviado
+            const form = $(this);
+            const actionUrl = form.attr('action');  // URL para la acción del formulario
+            const formData = form.serialize();  // Serializar los datos del formulario
+
+            // Enviar la solicitud AJAX
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: formData,
+                success: function(response) {
+                    if (response.recurso) {
+                        // Mostrar un mensaje de éxito
+                        alert("Cambios realizados correctamente.");
+
+                        // Actualizar la fila del recurso con los nuevos valores sin recargar la página
+                        const recursoId = response.recurso.id;
+                        const recursoRow = $(#recurso-${recursoId});
+                        recursoRow.find('.recurso-title').text(response.recurso.title);
+                        recursoRow.find('.recurso-description').text(response.recurso.description);
+                        
+                        // Para los enlaces externos, verifica si está presente y actualiza
+                        if (response.recurso.external_link) {
+                            recursoRow.find('.recurso-link').attr('href', response.recurso.external_link);
+                        }
+
+                        // Cerrar el modal de edición
+                        form.closest('.modal').modal('hide');
+                    } else if (response.error) {
+                        // Mostrar los errores devueltos
+                        alert("Ocurrió un error: " + JSON.stringify(response.error));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Manejo de errores
+                    alert("Ocurrió un error al actualizar el recurso. Por favor, intenta nuevamente.");
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    function eliminarRecurso(recursoId) {
+        const form = $(#deleteForm-${recursoId});
+        const actionUrl = form.attr('action');
+        const formData = form.serialize();
+
+        $.ajax({
+            type: "POST",
+            url: actionUrl,
+            data: formData,
+            success: function(response) {
+                if (response.message) {
+                    alert("Recurso eliminado correctamente.");
+                    $(#recurso-${recursoId}).remove();
+                } else if (response.error) {
+                    alert("Error: " + response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Ocurrió un error al eliminar el recurso.");
+            }
+        });
+    }
+</script>
+
+<script>
+    function confirmarEliminacion(recursoId) {
+        if (confirm("¿Estás seguro que deseas eliminar el recurso?")) {
+            fetch(/eliminar-recurso/${recursoId}, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'  // Asegúrate de incluir el token CSRF si lo estás usando.
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("La eliminación del recurso fue exitosa");
+                    // Remover la fila del recurso eliminado
+                    document.getElementById(recurso-${recursoId}).remove();
+                } else {
+                    response.json().then(data => {
+                        alert(Error: ${data.error});
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al eliminar el recurso:', error);
+                alert('Ocurrió un error al eliminar el recurso.');
+            });
+        }
+    }
+</script>
+
+
+<script>
+    function mostrarRecursos(tipo) {
+        // Ocultar todos los recursos
+        document.querySelectorAll('[data-resource-type]').forEach(function(row) {
+            row.style.display = 'none';
+        });
+
+        // Mostrar solo los recursos del tipo seleccionado
+        document.querySelectorAll(`[data-resource-type="${tipo}"]`).forEach(function(row) {
+            row.style.display = 'table-row';
+        });
+
+        if (tipo === 'chatbot') {
+            document.querySelectorAll('[data-category="Chatbot"]').forEach(function(row) {
+                row.style.display = 'table-row';
+            });
+        } else {
+            document.querySelectorAll(`[data-resource-type="${tipo}"]`).forEach(function(row) {
+                row.style.display = 'table-row';
+            });
+        }
+    }
+
+</script>
+
+
+
+{% endblock %}

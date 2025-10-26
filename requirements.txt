@@ -1,0 +1,32 @@
+# Dependencias para el framework Flask
+Flask==2.2.5  # Última versión estable de Flask
+
+# Las demás dependencias pueden quedarse igual
+Flask-SQLAlchemy==3.0.2
+Flask-Migrate==3.1.0  
+Flask-Mail==0.9.1  
+
+# Cliente para conectarse a PostgreSQL
+psycopg2-binary
+
+# Dependencias para la autenticación y gestión de usuarios
+Flask-Login==0.6.2
+Flask-WTF==1.0.1  
+Flask-Bcrypt==1.0.1
+Werkzeug==2.3.7
+
+# Servidor de producción para Flask
+gunicorn==20.1.0
+
+# Manejo de variables de entorno
+python-dotenv==0.19.2
+
+# Manejo de Sesiones con Redis
+Flask-Session==0.3.2  
+redis==4.1.0  
+
+# Otras dependencias útiles
+requests==2.28.1  
+WTForms==3.0.1  
+email-validator==1.3.0
+

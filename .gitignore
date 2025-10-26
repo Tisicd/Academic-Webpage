@@ -1,0 +1,343 @@
+# ==========================================
+# .gitignore para Sistema UCE
+# ==========================================
+
+# ==================== ARCHIVOS DE DOCUMENTACIÓN ====================
+# Excluir todos los .md EXCEPTO README.md
+*.md
+!README.md
+
+# ==================== PYTHON ====================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Virtual environments específicos del proyecto
+app_recursos/pyvenv.cfg
+app_recursos/Scripts/
+app_recursos/Lib/
+app_recursos/Include/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# ==================== ARCHIVOS DE CONFIGURACIÓN SENSIBLES ====================
+# Variables de entorno con datos sensibles
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+*.env
+
+# Archivos de configuración con credenciales
+config.local.py
+secrets.yaml
+credentials.json
+
+# ==================== IMÁGENES Y VIDEOS ====================
+# Imágenes
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.svg
+*.webp
+
+# Videos
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mkv
+*.webm
+*.m4v
+
+# ==================== ARCHIVOS SUBIDOS POR USUARIOS ====================
+# Carpetas de uploads
+app_recursos/app/uploads/
+app_recursos/app/static/img/
+uploads/
+media/
+
+# PDFs subidos
+*.pdf
+
+# Excepciones (si hay archivos que SÍ quieres incluir)
+# !app_recursos/app/static/img/logo.png
+# !app_recursos/app/static/img/favicon.ico
+
+# ==================== BASES DE DATOS ====================
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Dumps de PostgreSQL
+*.sql
+*.dump
+*.backup
+backup*.sql
+
+# Datos de PostgreSQL
+postgres_data/
+pgdata/
+
+# ==================== REDIS ====================
+redis_data/
+*.rdb
+dump.rdb
+
+# ==================== DOCKER ====================
+# No ignorar Dockerfile y docker-compose
+# Pero sí ignorar datos y volúmenes
+docker-compose.override.yml
+.dockerignore.local
+
+# ==================== IDE Y EDITORES ====================
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.*.sw?
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Atom
+.atom/
+
+# ==================== SISTEMA OPERATIVO ====================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+# ==================== LOGS Y TEMPORALES ====================
+# Logs
+*.log
+logs/
+*.log.*
+
+# Archivos temporales
+*.tmp
+*.temp
+*.cache
+tmp/
+temp/
+
+# ==================== BACKUP Y ARCHIVOS ANTIGUOS ====================
+*.bak
+*.old
+*.orig
+*.backup
+backup/
+old/
+
+# ==================== COMPILADOS Y BINARIOS ====================
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.dylib
+
+# ==================== NODE_MODULES (si usas frontend con npm) ====================
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# ==================== OTROS ====================
+# Archivos de prueba local
+test_local.py
+prueba*.py
+debug*.py
+
+# Claves SSH
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+
+# Certificados SSL
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# Archivos comprimidos grandes
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ==================== EXCEPCIONES IMPORTANTES ====================
+# Estos archivos SÍ deben incluirse:
+!requirements.txt
+!Dockerfile
+!docker-compose.yml
+!README.md
+!.gitignore
+!.dockerignore
+

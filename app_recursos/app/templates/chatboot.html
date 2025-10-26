@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Chatbots
+{% endblock %}
+
+{% block content %}
+    <!-- Header Start -->
+    <div class="container-fluid bg-primary py-5 mb-5 page-header">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 text-white animated slideInDown">Chatbots Educativos</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Section Title for Chatbots by Carrera and Materia -->
+    <div class="container text-center py-3">
+        <h2 class="display-5 text-primary mb-2">
+            {{ carrera_seleccionada.nombre if carrera_seleccionada else 'Todas las Carreras' }}
+        </h2>
+        <h4 class="text-secondary mb-4">
+            {{ materia_seleccionada.nombre if materia_seleccionada else 'Todas las Materias' }}
+        </h4>
+    </div>
+
+    <!-- Section for Filters -->
+    <div class="container mb-4">
+        <form id="filtro-chatbot" method="GET" action="{{ url_for('app_bp.chatboot') }}">
+            <div class="row g-2 align-items-center">
+                <!-- Filter for Career -->
+                <div class="col-md-5">
+                    <label for="filtro-carrera" class="form-label">Carrera:</label>
+                    <select class="form-select" id="filtro-carrera" name="carrera" onchange="this.form.submit()">
+                        <option value="" selected disabled>Selecciona una carrera</option>
+                        {% for carrera in carreras %}
+                        <option value="{{ carrera.id }}" {% if carrera.id == carrera_id_seleccionada %}selected{% endif %}>
+                            {{ carrera.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Filter for Subject -->
+                <div class="col-md-5">
+                    <label for="filtro-materia" class="form-label">Materia:</label>
+                    <select class="form-select" id="filtro-materia" name="materia" onchange="this.form.submit()">
+                        <option value="" selected disabled>Selecciona una materia</option>
+                        {% for materia in materias %}
+                        <option value="{{ materia.id }}" {% if materia.id == materia_id_seleccionada %}selected{% endif %}>
+                            {{ materia.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Section for Chatbot Cards -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-4">
+                {% if recursos_chatbot %}
+                    {% for recurso in recursos_chatbot %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">{{ recurso.title }}</h5>
+                                <p class="card-text">{{ recurso.description }}</p>
+                                <p class="card-text"><small class="text-muted">Subido por: {{ recurso.usuario.nombre }} {{ recurso.usuario.apellido }}</small></p>
+                                <a href="{{ recurso.external_link }}" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fas fa-comments"></i> Ir al Chatbot
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-lg-12 text-center">
+                        <p class="text-secondary">No hay chatbots disponibles para los filtros seleccionados.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - UCE Ciencias Económicas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #06BBCC;
+            --light: #F0FBFC;
+            --dark: #181d38;
+        }
+        .bg-primary { background-color: var(--primary); }
+        .text-primary { color: var(--primary); }
+        .bg-light { background-color: var(--light); }
+        .text-dark { color: var(--dark); }
+        .border-primary { border-color: var(--primary); }
+        .hover\:bg-primary:hover { background-color: var(--primary); }
+        
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Barra de navegación superior -->
+    <nav class="bg-white shadow-md mb-6">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <h1 class="text-2xl font-bold text-primary">UCE - Panel Admin</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-gray-700">
+                    <i class="fas fa-user-shield mr-2"></i>
+                    {{ current_user.nombre }} {{ current_user.apellido }}
+                </span>
+                <a href="{{ url_for('app_bp.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                    <i class="fas fa-home mr-2"></i>Inicio
+                </a>
+                <a href="{{ url_for('app_bp.logout') }}" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6">
+        <!-- Mensajes Flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-6">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} p-4 rounded-lg mb-2 
+                            {% if category == 'success' %}bg-green-100 text-green-800 border border-green-200{% endif %}
+                            {% if category == 'danger' %}bg-red-100 text-red-800 border border-red-200{% endif %}
+                            {% if category == 'info' %}bg-blue-100 text-blue-800 border border-blue-200{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+        </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Encabezado -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-dark mb-2">Panel de Administración</h1>
+            <p class="text-gray-600">Monitoreo y gestión del sistema de recursos educativos</p>
+        </div>
+
+        <!-- Cards de Estadísticas Principales -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm mb-1">Total Usuarios</p>
+                        <h3 class="text-3xl font-bold text-dark" id="total-usuarios">-</h3>
+                    </div>
+                    <div class="bg-blue-100 p-4 rounded-full">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm">
+                    <span class="text-green-600 font-semibold" id="docentes-count">0</span> Docentes
+                    <span class="mx-2">|</span>
+                    <span class="text-blue-600 font-semibold" id="estudiantes-count">0</span> Estudiantes
+                </div>
+            </div>
+
+            <div class="stat-card bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm mb-1">Total Recursos</p>
+                        <h3 class="text-3xl font-bold text-dark" id="total-recursos">-</h3>
+                    </div>
+                    <div class="bg-green-100 p-4 rounded-full">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm mb-1">Sesiones Hoy</p>
+                        <h3 class="text-3xl font-bold text-dark" id="sesiones-hoy">-</h3>
+                    </div>
+                    <div class="bg-purple-100 p-4 rounded-full">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-gray-600">
+                    <span id="usuarios-unicos">0</span> usuarios únicos
+                </div>
+            </div>
+
+            <div class="stat-card bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm mb-1">Accesos Recursos</p>
+                        <h3 class="text-3xl font-bold text-dark" id="accesos-hoy">-</h3>
+                    </div>
+                    <div class="bg-yellow-100 p-4 rounded-full">
+                        <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs de navegación -->
+        <div class="mb-6 flex flex-wrap gap-2">
+            <button class="tab-button active px-6 py-3 rounded-lg font-semibold" onclick="showTab('overview')">
+                Resumen
+            </button>
+            <button class="tab-button px-6 py-3 rounded-lg font-semibold bg-white" onclick="showTab('recursos')">
+                Recursos Populares
+            </button>
+            <button class="tab-button px-6 py-3 rounded-lg font-semibold bg-white" onclick="showTab('usuarios')">
+                Usuarios
+            </button>
+            <button class="tab-button px-6 py-3 rounded-lg font-semibold bg-white" onclick="showTab('actividad')">
+                Actividad Reciente
+            </button>
+        </div>
+
+        <!-- Tab: Resumen -->
+        <div id="overview" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Gráfica de Sesiones por Tipo de Usuario -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold text-dark mb-4">Sesiones por Tipo de Usuario (Hoy)</h3>
+                    <canvas id="sesionesChart"></canvas>
+                </div>
+
+                <!-- Gráfica de Recursos por Tipo -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold text-dark mb-4">Distribución de Recursos</h3>
+                    <canvas id="recursosChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfica de Actividad de los Últimos 7 Días -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-bold text-dark mb-4">Actividad de los Últimos 7 Días</h3>
+                <canvas id="actividadChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tab: Recursos Populares -->
+        <div id="recursos" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-bold text-dark mb-4">Top 20 Recursos Más Accedidos</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full" id="tabla-recursos-populares">
+                    <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-3 px-4">#</th>
+                                <th class="text-left py-3 px-4">Título</th>
+                                <th class="text-left py-3 px-4">Tipo</th>
+                                <th class="text-left py-3 px-4">Categoría</th>
+                                <th class="text-left py-3 px-4">Carrera</th>
+                                <th class="text-left py-3 px-4">Accesos</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                            <tr><td colspan="6" class="text-center py-4 text-gray-500">Cargando...</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Usuarios -->
+        <div id="usuarios" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold text-dark mb-4">Usuarios por Tipo</h3>
+                    <canvas id="usuariosTipoChart"></canvas>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold text-dark mb-4">Usuarios por Carrera</h3>
+                    <canvas id="usuariosCarreraChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Actividad Reciente -->
+        <div id="actividad" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Accesos Recientes -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold text-dark mb-4">Accesos Recientes (Últimas 24h)</h3>
+                    <div class="overflow-y-auto max-h-96" id="accesos-recientes">
+                        <p class="text-center text-gray-500 py-4">Cargando...</p>
+                    </div>
+                </div>
+
+                <!-- Sesiones Recientes -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-bold text-dark mb-4">Sesiones Recientes (Últimas 24h)</h3>
+                    <div class="overflow-y-auto max-h-96" id="sesiones-recientes">
+                        <p class="text-center text-gray-500 py-4">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales para las gráficas
+        let sesionesChart, recursosChart, actividadChart, usuariosTipoChart, usuariosCarreraChart;
+
+        // Función para mostrar/ocultar tabs
+        function showTab(tabName) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Quitar clase active de todos los botones
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+                button.classList.add('bg-white');
+            });
+            
+            // Mostrar el contenido seleccionado
+            document.getElementById(tabName).classList.remove('hidden');
+            
+            // Activar el botón correspondiente
+            event.target.classList.add('active');
+            event.target.classList.remove('bg-white');
+            
+            // Cargar datos específicos del tab
+            if (tabName === 'recursos') {
+                cargarRecursosPopulares();
+            } else if (tabName === 'usuarios') {
+                cargarEstadisticasUsuarios();
+            } else if (tabName === 'actividad') {
+                cargarActividadReciente();
+            }
+        }
+
+        // Cargar estadísticas generales
+        async function cargarEstadisticas() {
+            try {
+                const response = await fetch('/api/admin/estadisticas');
+                const data = await response.json();
+                
+                // Actualizar cards principales
+                document.getElementById('total-usuarios').textContent = data.usuarios.total;
+                document.getElementById('docentes-count').textContent = data.usuarios.docentes;
+                document.getElementById('estudiantes-count').textContent = data.usuarios.estudiantes;
+                document.getElementById('total-recursos').textContent = data.recursos.total;
+                document.getElementById('sesiones-hoy').textContent = data.hoy.sesiones_total;
+                document.getElementById('usuarios-unicos').textContent = data.hoy.usuarios_unicos;
+                document.getElementById('accesos-hoy').textContent = data.hoy.accesos_recursos;
+                
+                // Crear gráficas
+                crearGraficaSesiones(data.hoy);
+                crearGraficaRecursos(data.recursos.por_tipo);
+                crearGraficaActividad(data.ultimos_7_dias);
+            } catch (error) {
+                console.error('Error al cargar estadísticas:', error);
+            }
+        }
+
+        // Crear gráfica de sesiones
+        function crearGraficaSesiones(datos) {
+            const ctx = document.getElementById('sesionesChart');
+            if (sesionesChart) sesionesChart.destroy();
+            
+            sesionesChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Docentes', 'Estudiantes', 'Casuales'],
+                    datasets: [{
+                        data: [
+                            datos.sesiones_docentes,
+                            datos.sesiones_estudiantes,
+                            datos.sesiones_casuales
+                        ],
+                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Crear gráfica de recursos
+        function crearGraficaRecursos(porTipo) {
+            const ctx = document.getElementById('recursosChart');
+            if (recursosChart) recursosChart.destroy();
+            
+            recursosChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(porTipo),
+                    datasets: [{
+                        data: Object.values(porTipo),
+                        backgroundColor: ['#06BBCC', '#f59e0b', '#ef4444', '#8b5cf6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Crear gráfica de actividad
+        function crearGraficaActividad(datos) {
+            const ctx = document.getElementById('actividadChart');
+            if (actividadChart) actividadChart.destroy();
+            
+            const fechas = datos.map(d => d.fecha).reverse();
+            const sesiones = datos.map(d => d.sesiones_total).reverse();
+            const accesos = datos.map(d => d.accesos_recursos).reverse();
+            
+            actividadChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: fechas,
+                    datasets: [
+                        {
+                            label: 'Sesiones',
+                            data: sesiones,
+                            borderColor: '#06BBCC',
+                            backgroundColor: 'rgba(6, 187, 204, 0.1)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Accesos a Recursos',
+                            data: accesos,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Cargar recursos populares
+        async function cargarRecursosPopulares() {
+            try {
+                const response = await fetch('/api/admin/recursos/populares');
+                const data = await response.json();
+                
+                const tbody = document.querySelector('#tabla-recursos-populares tbody');
+                tbody.innerHTML = '';
+                
+                data.forEach((recurso, index) => {
+                    const row = `
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="py-3 px-4">${index + 1}</td>
+                            <td class="py-3 px-4">${recurso.titulo}</td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                                    ${recurso.tipo}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">${recurso.categoria}</td>
+                            <td class="py-3 px-4">${recurso.carrera}</td>
+                            <td class="py-3 px-4 font-bold text-primary">${recurso.accesos}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error al cargar recursos populares:', error);
+            }
+        }
+
+        // Cargar estadísticas de usuarios
+        async function cargarEstadisticasUsuarios() {
+            try {
+                const response = await fetch('/api/admin/usuarios/estadisticas');
+                const data = await response.json();
+                
+                // Gráfica por tipo
+                const ctxTipo = document.getElementById('usuariosTipoChart');
+                if (usuariosTipoChart) usuariosTipoChart.destroy();
+                
+                usuariosTipoChart = new Chart(ctxTipo, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(data.por_tipo),
+                        datasets: [{
+                            label: 'Cantidad',
+                            data: Object.values(data.por_tipo),
+                            backgroundColor: ['#10b981', '#3b82f6']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                // Gráfica por carrera
+                const ctxCarrera = document.getElementById('usuariosCarreraChart');
+                if (usuariosCarreraChart) usuariosCarreraChart.destroy();
+                
+                usuariosCarreraChart = new Chart(ctxCarrera, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(data.por_carrera),
+                        datasets: [{
+                            label: 'Cantidad',
+                            data: Object.values(data.por_carrera),
+                            backgroundColor: '#06BBCC'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        indexAxis: 'y',
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar estadísticas de usuarios:', error);
+            }
+        }
+
+        // Cargar actividad reciente
+        async function cargarActividadReciente() {
+            try {
+                const response = await fetch('/api/admin/actividad/reciente');
+                const data = await response.json();
+                
+                // Renderizar accesos
+                const accesosDiv = document.getElementById('accesos-recientes');
+                accesosDiv.innerHTML = '';
+                
+                data.accesos.slice(0, 20).forEach(acceso => {
+                    const item = `
+                        <div class="border-b border-gray-100 py-3 px-2">
+                            <p class="font-semibold text-sm">${acceso.recurso}</p>
+                            <p class="text-xs text-gray-600 mt-1">
+                                <span class="px-2 py-1 rounded-full bg-gray-100">${acceso.tipo_usuario}</span>
+                                · ${acceso.fecha}
+                            </p>
+                        </div>
+                    `;
+                    accesosDiv.innerHTML += item;
+                });
+                
+                // Renderizar sesiones
+                const sesionesDiv = document.getElementById('sesiones-recientes');
+                sesionesDiv.innerHTML = '';
+                
+                data.sesiones.slice(0, 20).forEach(sesion => {
+                    const item = `
+                        <div class="border-b border-gray-100 py-3 px-2">
+                            <p class="font-semibold text-sm">${sesion.usuario}</p>
+                            <p class="text-xs text-gray-600 mt-1">
+                                <span class="px-2 py-1 rounded-full bg-gray-100">${sesion.tipo_usuario}</span>
+                                · ${sesion.fecha_inicio}
+                                ${sesion.duracion !== 'En curso' ? `· ${Math.floor(sesion.duracion / 60)} min` : '· En curso'}
+                            </p>
+                        </div>
+                    `;
+                    sesionesDiv.innerHTML += item;
+                });
+            } catch (error) {
+                console.error('Error al cargar actividad reciente:', error);
+            }
+        }
+
+        // Cargar estadísticas al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarEstadisticas();
+            
+            // Actualizar cada 30 segundos
+            setInterval(cargarEstadisticas, 30000);
+        });
+    </script>
+</body>
+</html>

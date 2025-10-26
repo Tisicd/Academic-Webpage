@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+
+{% block title %}Bibliografía{% endblock %}
+
+{% block content %}
+    <!-- Header Start -->
+    <div class="container-fluid bg-primary py-5 mb-5 page-header">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 text-white animated slideInDown">Bibliografía</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Section Title based on selected career and subject -->
+    <div class="container text-center py-3">
+        <!-- Main Title -->
+        <h2 class="display-5 text-primary mb-2">
+            {{ carrera_seleccionada.nombre if carrera_seleccionada else 'Todas las Carreras' }}
+        </h2>
+        <!-- Subtitle -->
+        <h4 class="text-secondary mb-4">
+            {{ materia_seleccionada.nombre if materia_seleccionada else 'Todas las Materias' }}
+        </h4>
+    </div>
+    <!-- Section Title ends -->
+
+    <!-- Section for Filters -->
+    <div class="container mb-4">
+        <form id="filtro-bibliografia" method="GET" action="{{ url_for('app_bp.bibliografia_estudiantes') }}">
+            <div class="row g-2 align-items-center">
+                <!-- Filter for Career -->
+                <div class="col-md-5">
+                    <label for="filtro-carrera" class="form-label">Carrera:</label>
+                    <select class="form-select" id="filtro-carrera" name="carrera" onchange="this.form.submit()">
+                        <option value="" selected disabled>Selecciona una carrera</option>
+                        {% for carrera in carreras %}
+                        <option value="{{ carrera.id }}" {% if carrera.id == carrera_id_seleccionada %}selected{% endif %}>
+                            {{ carrera.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Filter for Subject -->
+                <div class="col-md-5">
+                    <label for="filtro-materia" class="form-label">Materia:</label>
+                    <select class="form-select" id="filtro-materia" name="materia" onchange="this.form.submit()">
+                        <option value="" selected disabled>Selecciona una materia</option>
+                        {% for materia in materias %}
+                        <option value="{{ materia.id }}" {% if materia.id == materia_id_seleccionada %}selected{% endif %}>
+                            {{ materia.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Section ends for Filters -->
+
+    <!-- Section for Bibliography Cards in Grid Format -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Loop to display the filtered resources -->
+                {% if recursos %}
+                    {% for recurso in recursos %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <!-- Card Body -->
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ recurso.title }}</h5>
+                                <p class="card-text">{{ recurso.description }}</p>
+                                <p class="card-text"><small class="text-muted">Subido por: {{ recurso.usuario.nombre }} {{ recurso.usuario.apellido }}</small></p>
+                                
+                                <!-- Different actions for Link and File resources -->
+                                {% if recurso.resource_type == 'Link' %}
+                                    <!-- View button for Link resources -->
+                                    <a href="{{ recurso.external_link }}" target="_blank" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i> Ver
+                                    </a>
+                                {% elif recurso.resource_type == 'Archivo' %}
+                                    <!-- View button for File resources -->
+                                    <a href="{{ url_for('app_bp.ver_pdf', pdf_id=recurso.id) }}" target="_blank" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i> Ver
+                                    </a>
+                                    <!-- Download button for authenticated users (students and teachers) -->
+                                    {% if current_user.is_authenticated %}
+                                    <a href="{{ url_for('app_bp.download_pdf', pdf_id=recurso.id) }}" class="btn btn-outline-success">
+                                        <i class="fas fa-download"></i> Descargar
+                                    </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Message if no resources are available -->
+                    <div class="col-lg-12 text-center">
+                        <p class="text-secondary">No hay recursos de bibliografía disponibles para los filtros seleccionados.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Section ends for Bibliography Cards -->
+{% endblock %}

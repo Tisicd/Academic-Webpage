@@ -1,0 +1,222 @@
+{% extends "layout.html" %}
+
+{% block title %}Recursos Académicos - Economía{% endblock %}
+
+{% block content %}
+<!-- Header Start -->
+<div class="container-fluid bg-primary py-5 mb-5 page-header">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1 class="display-3 text-white animated slideInDown">Recursos Académicos</h1>
+                <p class="text-white">Visualiza los recursos según tu área académica, materia, tipo de recurso y docente.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+
+<!-- Botón para seleccionar filtros -->
+<div class="container text-center my-4">
+    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+        Seleccionar Filtros <i class="fas fa-filter ms-2"></i>
+    </button>
+</div>
+
+<!-- Modal para Seleccionar Filtros -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filterModalLabel">Filtrar Recursos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="filterForm">
+                    <div class="mb-3">
+                        <label for="areaSelect" class="form-label">Área Académica</label>
+                        <select class="form-select" id="areaSelect" required>
+                            <option value="Economía">Economía</option>
+                            <option value="Finanzas">Finanzas</option>
+                            <option value="Estadística">Estadística</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="materiaSelect" class="form-label">Materia</label>
+                        <select class="form-select" id="materiaSelect" required>
+                            <option value="Álgebra Lineal">Álgebra Lineal</option>
+                            <option value="Matemática Básica">Matemática Básica</option>
+                            <option value="Matemática I">Matemática I</option>
+                            <option value="Matemática II">Matemática II</option>
+                            <option value="Cálculo Diferencial">Cálculo Diferencial</option>
+                            <option value="Cálculo Integral">Cálculo Integral</option>
+                            <option value="Cálculo I">Cálculo I</option>
+                            <option value="Cálculo II">Cálculo II</option>
+                            <option value="Cálculo III">Cálculo III</option>
+                            <option value="Ecuaciones Diferenciales">Ecuaciones Diferenciales</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tipoRecursoSelect" class="form-label">Tipo de Recurso</label>
+                        <select class="form-select" id="tipoRecursoSelect" required>
+                            <option value="videos">Videos de Ayuda</option>
+                            <option value="ejercicios">Ejercicios Resueltos</option>
+                            <option value="examenes">Exámenes Resueltos</option>
+                            <option value="silabo">Sílabo</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="docenteInput" class="form-label">Docente</label>
+                        <input type="text" class="form-control" id="docenteInput" placeholder="Nombre del docente">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contenedor para los recursos filtrados -->
+<div class="container-xxl py-5" id="recursosContainer">
+    <div class="container">
+        <div class="row g-4" id="resourceCards">
+            <!-- Los recursos se cargarán dinámicamente aquí -->
+        </div>
+    </div>
+</div>
+
+<!-- Script para carga dinámica de recursos -->
+<script>
+    const userRole = "{{ current_user.role }}";  // 'docente' o 'publico'
+    const allowedSubjects = "{{ current_user.materias }}".split(',');  // Materias del docente
+
+    // Ejemplo de recursos obtenidos desde Redis (o base de datos)
+    const recursos = [
+        {
+            id: 1,
+            area: 'Economía',
+            materia: 'Matemática Básica',
+            title: 'Ejercicio 1 - Identidad Trigonométrica Coseno',
+            description: 'Ejercicio resuelto sobre identidad trigonométrica del coseno.',
+            url: '/static/pdf/ejercicio1.pdf',
+            type: 'ejercicio',
+            docente: 'Juan Pérez'
+        },
+        {
+            id: 2,
+            area: 'Finanzas',
+            materia: 'Cálculo Diferencial',
+            title: 'Video - Derivadas',
+            description: 'Conceptos básicos de derivadas.',
+            url: 'https://www.youtube.com/embed/0NAKpzOfVoY',
+            type: 'videos',
+            docente: 'María López'
+        },
+    ];
+
+    const resourceContainer = document.getElementById('resourceCards');
+
+    // Filtrar recursos según los filtros seleccionados
+    document.getElementById('filterForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const area = document.getElementById('areaSelect').value;
+        const materia = document.getElementById('materiaSelect').value;
+        const tipoRecurso = document.getElementById('tipoRecursoSelect').value;
+        const docente = document.getElementById('docenteInput').value.trim().toLowerCase();
+
+        const filteredRecursos = recursos.filter(recurso =>
+            recurso.area === area &&
+            recurso.materia === materia &&
+            recurso.type === tipoRecurso &&
+            (docente === '' || recurso.docente.toLowerCase().includes(docente))
+        );
+        displayRecursos(filteredRecursos);
+    });
+
+    // Mostrar recursos en el contenedor
+    function displayRecursos(recursos) {
+        resourceContainer.innerHTML = '';
+        if (recursos.length === 0) {
+            resourceContainer.innerHTML = '<p class="text-center">No hay recursos disponibles para estos filtros.</p>';
+            return;
+        }
+
+        recursos.forEach(recurso => {
+            const canEdit = userRole === 'docente' && allowedSubjects.includes(recurso.materia);
+            const card = document.createElement('div');
+            card.className = 'col-lg-12 mb-4';
+
+            if (recurso.type === 'ejercicio' || recurso.type === 'examenes' || recurso.type === 'silabo') {
+                // Mostrar PDFs
+                card.innerHTML = `
+                    <div class="card bg-light border-0 shadow-sm">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-md-2 text-center">
+                                <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="PDF Icon" class="pdf-icon">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <h5 class="card-title">${recurso.title}</h5>
+                                    <p class="card-text">${recurso.description}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <a href="${recurso.url}" target="_blank" class="btn btn-primary">Visualizar</a>
+                                <a href="${recurso.url}" download class="btn btn-secondary">Descargar</a>
+                            </div>
+                            ${canEdit ? `
+                            <div class="resource-actions d-flex justify-content-end mt-2">
+                                <button class="btn btn-outline-primary btn-sm">Editar</button>
+                                <button class="btn btn-outline-danger btn-sm">Eliminar</button>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                `;
+            } else if (recurso.type === 'videos') {
+                // Mostrar Videos
+                card.innerHTML = `
+                    <div class="card bg-light border-0 shadow-sm">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-md-2 text-center">
+                                <i class="fab fa-3x fa-youtube text-primary"></i>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <h5 class="card-title">${recurso.title}</h5>
+                                    <p class="card-text">${recurso.description}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <iframe width="320" height="180" src="${recurso.url}" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                            </div>
+                            ${canEdit ? `
+                            <div class="resource-actions d-flex justify-content-end mt-2">
+                                <button class="btn btn-outline-primary btn-sm">Editar</button>
+                                <button class="btn btn-outline-danger btn-sm">Eliminar</button>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            resourceContainer.appendChild(card);
+        });
+    }
+
+    // TODO: Conectar con la base de datos usando Redis para obtener recursos
+    // Ejemplo de código comentado para futura implementación con Redis:
+    // const redis = require('redis');
+    // const client = redis.createClient();
+    // client.on('connect', function() {
+    //     console.log('Conectado a Redis...');
+    // });
+    // client.get('recursos', function(err, reply) {
+    //     if (err) throw err;
+    //     recursos = JSON.parse(reply);
+    //     displayRecursos(recursos);
+    // });
+</script>
+
+{% endblock %}

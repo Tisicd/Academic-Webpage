@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+
+{% block title %}Herramientas - eDUTEC{% endblock %}
+
+{% block content %}
+<!-- Header Start -->
+<div class="container-fluid bg-primary py-5 mb-5 page-header">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1 class="display-3 text-white animated slideInDown">Herramientas</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+
+<!-- Section Title for Matematica Basica -->
+<div id="economia" class="container text-center py-3">
+    <!-- Main Title -->
+    <h2 class="display-5 text-primary mb-2">Matemática</h2>
+    <!-- Subtitle -->
+    <h4 class="text-secondary mb-4">Herramientas esenciales</h4>
+</div>
+
+<!-- Service Cards for Useful Online Tools -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Wolfram Alpha -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item text-center pt-3 h-100">
+                    <div class="p-4">
+                        <a href="https://www.wolframalpha.com/" target="_blank">
+                            <img src="{{ url_for('static', filename='img/wolfram_alpha_logo.png') }}" alt="Wolfram Alpha" class="mb-4" style="max-width: 80px; height: auto;">
+                        </a>
+                        <h5 class="mb-3">Wolfram Alpha</h5>
+                        <p>Resuelve problemas matemáticos complejos con explicaciones detalladas paso a paso.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GeoGebra -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item text-center pt-3 h-100">
+                    <div class="p-4">
+                        <a href="https://www.geogebra.org/" target="_blank">
+                            <img src="{{ url_for('static', filename='img/geogebra_logo.png') }}" alt="GeoGebra" class="mb-4" style="max-width: 80px; height: auto;">
+                        </a>
+                        <h5 class="mb-3">GeoGebra</h5>
+                        <p>Explora conceptos matemáticos con herramientas interactivas de álgebra, geometría y cálculo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desmos -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item text-center pt-3 h-100">
+                    <div class="p-4">
+                        <a href="https://www.desmos.com/" target="_blank">
+                            <img src="{{ url_for('static', filename='img/desmos_logo.png') }}" alt="Desmos" class="mb-4" style="max-width: 80px; height: auto;">
+                        </a>
+                        <h5 class="mb-3">Desmos</h5>
+                        <p>Calculadora gráfica en línea con actividades interactivas para visualizar conceptos matemáticos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notion -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item text-center pt-3 h-100">
+                    <div class="p-4">
+                        <a href="https://www.notion.so/" target="_blank">
+                            <img src="{{ url_for('static', filename='img/notion_logo.png') }}" alt="Notion" class="mb-4" style="max-width: 80px; height: auto;">
+                        </a>
+                        <h5 class="mb-3">Notion</h5>
+                        <p>Organiza tus notas, tareas y proyectos de manera eficiente y profesional.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photomath -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item text-center pt-3 h-100">
+                    <div class="p-4">
+                        <a href="https://photomath.com/" target="_blank">
+                            <img src="{{ url_for('static', filename='img/photomath_logo.png') }}" alt="Photomath" class="mb-4" style="max-width: 80px; height: auto;">
+                        </a>
+                        <h5 class="mb-3">Photomath</h5>
+                        <p>Escanea y resuelve problemas matemáticos con soluciones paso a paso.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maplesoft -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item text-center pt-3 h-100">
+                    <div class="p-4">
+                        <a href="https://www.maplesoft.com/" target="_blank">
+                            <img src="{{ url_for('static', filename='img/maplesoft_logo.png') }}" alt="Maplesoft" class="mb-4" style="max-width: 80px; height: auto;">
+                        </a>
+                        <h5 class="mb-3">Maplesoft</h5>
+                        <p>Herramientas avanzadas de computación simbólica y creación de cursos para estudiantes de ingeniería y matemáticas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grammarly -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-item text-center pt-3 h-100">
+                    <div class="p-4">
+                        <a href="https://www.grammarly.com/" target="_blank">
+                            <img src="{{ url_for('static', filename='img/grammarly_logo.png') }}" alt="Grammarly" class="mb-4" style="max-width: 80px; height: auto;">
+                        </a>
+                        <h5 class="mb-3">Grammarly</h5>
+                        <p>Mejora tus textos escritos con correcciones y sugerencias para mayor claridad y profesionalismo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Service Cards ends for Useful Online Tools -->
+
+{% endblock %}

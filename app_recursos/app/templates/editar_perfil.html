@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Editar Perfil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Roboto', sans-serif;
+        background: url("{{ url_for('static', filename='img/uce_bg.jpg') }}") 
+          no-repeat center center fixed;
+        background-size: cover;
+      }
+    </style>
+  </head>
+  <body class="flex justify-center items-center min-h-screen">
+    <div
+      class="container flex w-full max-w-4xl h-auto bg-gradient-to-r from-white to-[#06BBCC] rounded-2xl shadow-lg overflow-hidden"
+    >
+      <div class="left flex flex-1 flex-col justify-center items-center p-6 bg-white">
+        <h2 class="text-2xl font-bold mb-6">Editar Perfil</h2>
+        <form class="w-full space-y-4" method="POST" action="{{ url_for('app_bp.editar_perfil') }}" enctype="multipart/form-data">
+          {{ form.hidden_tag() }} <!-- Token CSRF para seguridad -->
+
+          <div class="flex flex-col items-center space-y-2">
+            <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+              <img
+                alt="Foto de perfil"
+                class="rounded-full object-cover w-32 h-32"
+                src="{% if perfil.tipo_usuario == 'docente' and perfil.foto_perfil %}{{ perfil.foto_perfil }}{% elif perfil.tipo_usuario == 'estudiante' %}{{ url_for('static', filename='img/' + perfil.carrera.nombre.lower() + '_profile.png') }}{% else %}{{ url_for('static', filename='img/economia_profile.png') }}{% endif %}"
+              />
+            </div>
+            {% if perfil.tipo_usuario == 'docente' %}
+            <label
+              for="picture"
+              class="cursor-pointer bg-[#06BBCC] text-white hover:bg-[#05a0b2] px-4 py-2 rounded-full"
+              >Subir Foto</label>
+            <input id="picture" name="picture" type="file" accept="image/*" class="hidden" />
+            {% endif %}
+          </div>
+
+          <div class="flex space-x-4">
+            <div class="w-1/2">
+              {{ form.nombre.label(class_="block text-sm font-medium text-gray-700") }}
+              {{ form.nombre(class_="mt-1 block w-full border-[#06BBCC] border-2 rounded-full p-2 focus:ring-[#06BBCC] focus:border-[#06BBCC]") }}
+            </div>
+            <div class="w-1/2">
+              {{ form.apellido.label(class_="block text-sm font-medium text-gray-700") }}
+              {{ form.apellido(class_="mt-1 block w-full border-[#06BBCC] border-2 rounded-full p-2 focus:ring-[#06BBCC] focus:border-[#06BBCC]") }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+            <input
+              class="mt-1 block w-full bg-gray-100 border-[#06BBCC] border-2 rounded-full p-2 focus:ring-[#06BBCC] focus:border-[#06BBCC]"
+              type="text"
+              value="{{ perfil.email }}"
+              readonly
+            />
+          </div>
+
+          {% if perfil.tipo_usuario == 'docente' %}
+          <div>
+            {{ form.redes_educativas.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.redes_educativas(class_="mt-1 block w-full border-[#06BBCC] border-2 rounded-lg p-2 focus:ring-[#06BBCC] focus:border-[#06BBCC]") }}
+          </div>
+
+          <div>
+            {{ form.articulos.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.articulos(class_="mt-1 block w-full border-[#06BBCC] border-2 rounded-lg p-2 focus:ring-[#06BBCC] focus:border-[#06BBCC]") }}
+          </div>
+          {% endif %}
+
+          <div>
+            {{ form.password_actual.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.password_actual(class_="mt-1 block w-full border-[#06BBCC] border-2 rounded-full p-2 focus:ring-[#06BBCC] focus:border-[#06BBCC]") }}
+          </div>
+
+          <div>
+            {{ form.nueva_password.label(class_="block text-sm font-medium text-gray-700") }}
+            {{ form.nueva_password(class_="mt-1 block w-full border-[#06BBCC] border-2 rounded-full p-2 focus:ring-[#06BBCC] focus:border-[#06BBCC]") }}
+          </div>
+
+          <div class="flex gap-4 mt-4">
+            <button
+              type="submit"
+              class="flex-1 bg-[#06BBCC] hover:bg-[#05a0b2] text-white py-2 px-4 rounded-full transition-colors"
+            >
+              Guardar Cambios
+            </button>
+            <a
+              href="{{ url_for('app_bp.index') }}"
+              class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-full text-center transition-colors"
+            >
+              Regresar
+            </a>
+          </div>
+        </form>
+      </div>
+      <div class="right flex flex-1 justify-center items-center p-6 text-white">
+        <div class="text-center">
+          <img
+            class="w-24 h-24 mb-4"
+            src="{{ url_for('static', filename='img/logo_fce.png') }}"
+            alt="Logo de la Facultad"
+          />
+          <h2 class="text-2xl font-bold mb-2">Usuario: {{ perfil.tipo_usuario }}</h2>
+          <p class="text-lg mb-4">Carrera: {{ perfil.carrera.nombre }}</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

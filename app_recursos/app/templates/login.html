@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos para mensajes flash */
+        .flash-messages {
+            width: 90%;
+            margin-bottom: 15px;
+        }
+        
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: url("{{ url_for('static', filename='img/uce_bg.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .container {
+            display: flex;
+            width: 800px;
+            height: 500px;
+            background: linear-gradient(to right, #ffffff, #06BBCC);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #ffffff;
+        }
+
+        .right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .right h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .right p {
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .left h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .input-container input {
+            width: 90%;
+            padding: 10px 30px 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-container i {
+            position: absolute;
+            right: 5px;
+            top: 65%;
+            transform: translateY(-50%);
+            color: #06BBCC;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 35px;
+            top: 65%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #06BBCC;
+            transition: color 0.3s;
+        }
+
+        .toggle-password:hover {
+            color: #05a0b2;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-container label {
+            margin-right: 12px;
+        }
+
+        .checkbox-container a {
+            color: #06BBCC;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .button {
+            background: #06BBCC;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .button:hover {
+            background: #05a0b2;
+        }
+
+        .signin-link {
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .signin-link a {
+            color: #06BBCC;
+            text-decoration: none;
+        }
+    </style>
+    <script>
+        // Función para mostrar/ocultar contraseña
+        function togglePassword() {
+            const passwordField = document.getElementById('password-field');
+            const toggleIcon = document.getElementById('toggle-password');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left">
+            <h2>Iniciar Sesión</h2>
+            
+            <!-- Mensajes Flash de Flask -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('app_bp.login') }}" method="POST">
+                {{ form.hidden_tag() }} <!-- Token CSRF para seguridad -->
+
+                <div class="input-container">
+                    <label for="email">Correo Electrónico</label>
+                    {{ form.email(class="form-control", id="email") }}
+                    {% if form.email.errors %}
+                        <div class="error-message">{{ form.email.errors[0] }}</div>
+                    {% endif %}
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="input-container">
+                    <label for="password-field">Contraseña</label>
+                    {{ form.password(class="form-control", id="password-field") }}
+                    {% if form.password.errors %}
+                        <div class="error-message">{{ form.password.errors[0] }}</div>
+                    {% endif %}
+                    <i class="fas fa-eye toggle-password" id="toggle-password" onclick="togglePassword()" title="Mostrar/Ocultar contraseña"></i>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="checkbox-container">
+                    <label><input type="checkbox" name="remember"> Recordarme</label>
+                    <a href="{{ url_for('app_bp.forgot_password') }}">Olvidé mi contraseña</a>
+                </div>
+
+                <button type="submit" class="button">Iniciar Sesión</button>
+            </form>
+            <div class="signin-link">
+                <p>¿No tienes una cuenta? <a href="{{ url_for('app_bp.registro') }}">Regístrate aquí</a></p>
+            </div>
+        </div>
+        <div class="right">
+            <div id="message-container">
+                <h2 id="dynamic-message">¡Qué gusto verte de nuevo! 😊</h2>
+                <p>Tu experiencia está a punto de mejorar. ¡Bienvenido de nuevo! 🌟</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

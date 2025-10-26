@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% block title %}Recursos - UCE Ciencias Económicas{% endblock %}
+
+{% block content %}
+    <!-- Header Start -->
+    <div class="container-fluid bg-primary py-5 mb-5 page-header">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-3 text-white animated slideInDown">Recursos</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+
+    <!-- Lista de Carreras y Materias -->
+    <div class="container text-center py-3">
+        <h2 class="display-5 text-primary mb-4">Selecciona una Carrera y Materia</h2>
+    </div>
+
+    <!-- Section for General Resources -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <!-- Filtrar las carreras y materias -->
+            <div class="row g-4">
+                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <a href="{{ url_for('app_bp.videos_estudiantes') }}">
+                                <i class="fab fa-3x fa-youtube text-primary mb-4"></i>
+                            </a>
+                            <h5 class="mb-3">Videos Explicativos</h5>
+                            <p>Accede a una serie de videos detallados sobre los temas de la materia seleccionada.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <a href="{{ url_for('app_bp.ejercicios_estudiantes') }}">
+                                <i class="fas fa-3x fa-pencil-alt text-primary mb-4"></i>
+                            </a>
+                            <h5 class="mb-3">Ejercicios Resueltos</h5>
+                            <p>Practica con ejercicios resueltos paso a paso para mejorar tu comprensión.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <a href="{{ url_for('app_bp.examenes_estudiantes') }}">
+                                <i class="fas fa-3x fa-file-alt text-primary mb-4"></i>
+                            </a>
+                            <h5 class="mb-3">Exámenes Resueltos</h5>
+                            <p>Revisa exámenes anteriores con soluciones detalladas para prepararte mejor.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <a href="{{ url_for('app_bp.bibliografia_estudiantes') }}">
+                                <i class="fas fa-3x fa-book text-primary mb-4"></i>
+                            </a>
+                            <h5 class="mb-3">Bibliografía</h5>
+                            <p>Accede a los libros y materiales de lectura recomendados para la materia.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.9s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <a href="{{ url_for('app_bp.aplicaciones_estudiantes') }}">
+                                <i class="fas fa-3x fa-laptop-code text-primary mb-4"></i>
+                            </a>
+                            <h5 class="mb-3">Aplicaciones</h5>
+                            <p>Explora aplicaciones útiles para el aprendizaje de la materia seleccionada.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="1.1s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <a href="{{ url_for('app_bp.chatboot') }}">
+                                <i class="fas fa-3x fa-comments text-primary mb-4"></i>
+                            </a>
+                            <h5 class="mb-3">Chatbots</h5>
+                            <p>Interactúa con chatbots educativos que te ayudarán a resolver tus dudas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

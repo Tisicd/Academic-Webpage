@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>UCE - Ciencias Económicas</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    {% block extra_head %}
+    <!-- Aquí puedes incluir elementos adicionales para cada página específica -->
+    {% endblock %}
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+   <!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="{{ url_for('app_bp.index') }}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>FCE-UCE</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+
+            <!-- Home -->
+            <a href="{{ url_for('app_bp.index') }}" class="nav-item nav-link">Home</a>
+
+            <!-- Recursos -->
+            <a href="{{ url_for('app_bp.recursos') }}" class="nav-item nav-link active">Recursos</a>
+
+            <!-- Herramientas -->
+            <a href="{{ url_for('app_bp.herramientas') }}" class="nav-item nav-link active">Herramientas</a>
+
+            <!-- ChatBoot -->
+            <a href="{{ url_for('app_bp.chatboot') }}" class="nav-item nav-link">Chat-Boot</a>
+
+            <!-- Subir recursos (visible solo para docentes) -->
+            {% if current_user.is_authenticated and current_user.tipo_usuario == 'docente' %}
+            <a href="{{ url_for('app_bp.gestionar_recursos') }}" class="nav-item nav-link">Subir Recursos</a>
+            {% endif %}
+            
+            <!-- Docentes -->
+            <a href="{{ url_for('app_bp.docentes') }}" class="nav-item nav-link">Docentes</a>
+
+            <!-- Áreas Académicas Dropdown -->
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Áreas Académicas</a>
+                <div class="dropdown-menu fade-down m-0">
+
+                    <!-- Economía -->
+                    <div class="accordion-item">
+                        <h6 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#economiaMenu">
+                                Economía
+                            </button>
+                        </h6>
+                        <div id="economiaMenu" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                                <div class="accordion">
+                                    {% for materia in ['Álgebra Lineal', 'Matemática Básica', 'Matemática I', 'Matemática II'] %}
+                                    <div class="accordion-item">
+                                        <h6 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ materia|replace(' ', '') }}">
+                                                {{ materia }}
+                                            </button>
+                                        </h6>
+                                        <div id="{{ materia|replace(' ', '') }}" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <ul class="list-unstyled">
+                                                    <li><a href="{{ url_for('app_bp.videos_estudiantes') }}">Videos</a></li>
+                                                    <li><a href="{{ url_for('app_bp.ejercicios_estudiantes') }}">Ejercicios</a></li>
+                                                    <li><a href="{{ url_for('app_bp.examenes_estudiantes') }}">Éxamenes</a></li>
+                                                    <li><a href="{{ url_for('app_bp.aplicaciones_estudiantes') }}">Aplicaciones</a></li> <!-- Nuevo apartado -->
+                                                    <li><a href="{{ url_for('app_bp.bibliografia_estudiantes') }}">Bibliografía</a></li> <!-- Nuevo apartado -->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Finanzas -->
+                    <div class="accordion-item">
+                        <h6 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#finanzasMenu">
+                                Finanzas
+                            </button>
+                        </h6>
+                        <div id="finanzasMenu" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                                <div class="accordion">
+                                    {% for materia in ['Matemática Básica', 'Cálculo Diferencial', 'Cálculo Integral'] %}
+                                    <div class="accordion-item">
+                                        <h6 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ materia|replace(' ', '') }}">
+                                                {{ materia }}
+                                            </button>
+                                        </h6>
+                                        <div id="{{ materia|replace(' ', '') }}" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <ul class="list-unstyled">
+                                                    <li><a href="{{ url_for('app_bp.videos_estudiantes') }}">Videos</a></li>
+                                                    <li><a href="{{ url_for('app_bp.ejercicios_estudiantes') }}">Ejercicios</a></li>
+                                                    <li><a href="{{ url_for('app_bp.examenes_estudiantes') }}">Éxamenes</a></li>
+                                                    <li><a href="{{ url_for('app_bp.aplicaciones_estudiantes') }}">Aplicaciones</a></li> <!-- Nuevo apartado -->
+                                                    <li><a href="{{ url_for('app_bp.bibliografia_estudiantes') }}">Bibliografía</a></li> 
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estadística -->
+                    <div class="accordion-item">
+                        <h6 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#estadisticaMenu">
+                                Estadística
+                            </button>
+                        </h6>
+                        <div id="estadisticaMenu" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                                <div class="accordion">
+                                    {% for materia in ['Cálculo I', 'Cálculo II', 'Cálculo III', 'Ecuaciones Diferenciales'] %}
+                                    <div class="accordion-item">
+                                        <h6 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ materia|replace(' ', '') }}">
+                                                {{ materia }}
+                                            </button>
+                                        </h6>
+                                        <div id="{{ materia|replace(' ', '') }}" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                <ul class="list-unstyled">
+                                                    <li><a href="{{ url_for('app_bp.videos_estudiantes') }}">Videos</a></li>
+                                                    <li><a href="{{ url_for('app_bp.ejercicios_estudiantes') }}">Ejercicios</a></li>
+                                                    <li><a href="{{ url_for('app_bp.examenes_estudiantes') }}">Éxamenes</a></li>
+                                                    <li><a href="{{ url_for('app_bp.aplicaciones_estudiantes') }}">Aplicaciones</a></li> <!-- Nuevo apartado -->
+                                                    <li><a href="{{ url_for('app_bp.bibliografia_estudiantes') }}">Bibliografía</a></li> 
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Opciones de usuario autenticado o invitado -->
+            {% if current_user.is_authenticated %}
+            <!-- Menú desplegable para usuario autenticado -->
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="fa fa-user"></i> {{ current_user.username }}
+                </a>
+                <div class="dropdown-menu fade-down m-0">
+                    <a href="{{ url_for('app_bp.editar_perfil') }}" class="dropdown-item">
+                        Editar Perfil <i class="fa fa-user-edit ms-2"></i>
+                    </a>
+                    <a href="{{ url_for('app_bp.logout') }}" class="dropdown-item">
+                        Cerrar Sesión <i class="fa fa-sign-out-alt ms-2"></i>
+                    </a>
+                    <a href="{{ url_for('app_bp.editar_perfil') }}" class="dropdown-item">
+                        Mi Perfil <i class="fa fa-id-badge ms-2"></i>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <!-- Botón para iniciar sesión (azul por defecto, blanco al hover) -->
+            <div class="nav-item">
+                <a href="{{ url_for('app_bp.login') }}" class="nav-link btn btn-primary px-4 shadow-sm text-white hover-effect">
+                    Iniciar Sesión <i class="fa fa-sign-in-alt ms-2"></i>
+                </a>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+
+    <!-- Contenido específico de la página -->
+    <div class="container">
+        {% block content %}
+        <!-- Aquí se inyectará el contenido de la página hija -->
+        {% endblock %}
+    </div>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">REDES</h4>
+                    <hr class="bg-light">
+                    <div class="networks-logos d-flex flex-wrap justify-content-start">
+                        <img alt="Logo of Asibei" height="50" src="{{ url_for('static', filename='img/logo uce.png') }}"
+                            width="50" />
+                        <img alt="Logo of REIES" height="50"
+                            src="{{ url_for('static', filename='img/biblio uce.png') }}" width="50" />
+                        <img alt="Logo of REDU" height="50" src="{{ url_for('static', filename='img/logo uce.png') }}"
+                            width="50" />
+                        <img alt="Logo of UDUAL" height="50" src="{{ url_for('static', filename='img/logo uce.png') }}"
+                            width="50" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">SÍGUENOS</h4>
+                    <hr class="bg-light">
+                    <div class="social-icons d-flex mb-3">
+                        <a href="#" class="btn btn-outline-light btn-social mx-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-social mx-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-social mx-2"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-social mx-2"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div class="contact-buttons">
+                        <a href="#" class="btn btn-outline-primary rounded-pill mb-2">Contáctanos</a>
+                        <a href="#" class="btn btn-outline-secondary rounded-pill">Sugerencias</a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">LLÁMANOS</h4>
+                    <hr class="bg-light">
+                    <p class="mb-2"><i class="fas fa-phone-alt me-3"></i>(+593) 2 2976 300</p>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">UBICACIÓN</h4>
+                    <hr class="bg-light">
+                    <p><i class="fas fa-map-marker-alt me-3"></i>Facultad de Ciencias Económicas Av. Universitaria y Av.
+                        América</p>
+                    <div class="time d-flex align-items-center">
+                        <i class="fas fa-clock me-3" style="font-size: 2rem;"></i>
+                        <span id="clock" class="fw-bold" style="font-size: 2rem;">16 : 52 : 35</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <hr class="bg-light">
+            <div class="copyright py-3">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="#">FCHelp</a>, Todos los derechos reservados. Diseñado por
+                        <a class="border-bottom" href="#">C & C</a>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-menu">
+                            <a href="#" class="text-light me-3">C & C</a>
+                            <a href="#" class="text-light me-3">Nuestros Diseños</a>
+                            <a href="#" class="text-light"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-light"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

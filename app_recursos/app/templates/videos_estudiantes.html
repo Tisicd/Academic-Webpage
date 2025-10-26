@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block title %}Videos{% endblock %}
+
+{% block content %}
+<!-- Section Title based on selected career and subject -->
+<div class="container text-center py-3">
+    <!-- Main Title -->
+    <h2 class="display-5 text-primary mb-2">
+        {{ carrera_seleccionada.nombre if carrera_seleccionada else 'Todas las Carreras' }}
+    </h2>
+    <!-- Subtitle -->
+    <h4 class="text-secondary mb-4">
+        {{ materia_seleccionada.nombre if materia_seleccionada else 'Todas las Materias' }}
+    </h4>
+</div>
+<!-- Section Title ends -->
+
+
+<!-- Section for Filters -->
+<div class="container mb-4">
+    <form id="filtro-videos" method="GET" action="{{ url_for('app_bp.videos_estudiantes') }}">
+        <div class="row g-2 align-items-center">
+            <!-- Filter for Career -->
+            <div class="col-md-5">
+                <label for="filtro-carrera" class="form-label">Carrera:</label>
+                <select class="form-select" id="filtro-carrera" name="carrera" onchange="this.form.submit()">
+                    <option value="" selected disabled>Selecciona una carrera</option>
+                    {% for carrera in carreras %}
+                    <option value="{{ carrera.id }}" {% if carrera.id == carrera_id_seleccionada %}selected{% endif %}>
+                        {{ carrera.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <!-- Filter for Subject -->
+            <div class="col-md-5">
+                <label for="filtro-materia" class="form-label">Materia:</label>
+                <select class="form-select" id="filtro-materia" name="materia" onchange="this.form.submit()">
+                    <option value="" selected disabled>Selecciona una materia</option>
+                    {% for materia in materias %}
+                    <option value="{{ materia.id }}" {% if materia.id == materia_id_seleccionada %}selected{% endif %}>
+                        {{ materia.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Section ends for Filters -->
+
+
+<!-- Section for Video Cards in Grid Format -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Bucle para recorrer los videos filtrados -->
+            {% if recursos %}
+                {% for recurso in recursos %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <!-- YouTube Video Embed -->
+                        <div class="ratio ratio-16x9">
+                            <iframe width="100%" height="100%" src="{{ recurso.youtube_link }}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ recurso.title }}</h5>
+                            <p class="card-text">{{ recurso.description }}</p>
+                            <!-- Mostrar el nombre del usuario que subió el recurso -->
+                            <p class="card-text"><small class="text-muted">Subido por: {{ recurso.usuario.nombre }} {{ recurso.usuario.apellido }}</small></p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Mensaje si no hay recursos disponibles -->
+                <div class="col-lg-12 text-center">
+                    <p class="text-secondary">No hay videos disponibles para los filtros seleccionados.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- Section ends for Video Cards -->
+{% endblock %}

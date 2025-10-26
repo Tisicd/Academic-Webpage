@@ -1,0 +1,238 @@
+{% extends "layout.html" %}
+
+{% block title %}Inicio - UCE Ciencias Económicas{% endblock %}
+
+{% block content %}
+
+<!-- Contenedor del Video de Presentación -->
+<div class="video-section">
+    <div class="video-wrapper">
+        <video autoplay loop muted playsinline>
+            <source src="{{ url_for('static', filename='img/presentacion.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</div>
+ 
+{% if current_user.is_authenticated %}
+<!-- Contenido para Usuarios Autenticados -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Bienvenido de nuevo, {{ current_user.username }}!</h2>
+        <p class="text-center">Explora tus recursos personalizados y las herramientas disponibles.</p>
+        <div class="text-center">
+            <a href="{{ url_for('app_bp.editar_perfil') }}" class="btn btn-primary py-2 px-4">Editar Perfil</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Service Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item text-center pt-3">
+                    <div class="p-4">
+                        <i class="fa fa-3x fa-graduation-cap text-primary mb-4"></i>
+                        <h5 class="mb-3">Docentes Expertos</h5>
+                        <p>Aprende de docentes especializados en diferentes áreas como Economía, Finanzas y Estadística
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="service-item text-center pt-3">
+                    <div class="p-4">
+                        <i class="fa fa-3x fa-globe text-primary mb-4"></i>
+                        <h5 class="mb-3">Acceso Global</h5>
+                        <p>Accede desde cualquier lugar y desde cualquier dispositivo con acceso a internet a los
+                            recursos educativos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="service-item text-center pt-3">
+                    <div class="p-4">
+                        <i class="fa fa-3x fa-home text-primary mb-4"></i>
+                        <h5 class="mb-3">Proyectos y Ejercicios</h5>
+                        <p>Desarrolla tus habilidades resolviendo ejercicios prácticos que te ayudarán en tus
+                            evaluaciones.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="service-item text-center pt-3">
+                    <div class="p-4">
+                        <i class="fa fa-3x fa-book-open text-primary mb-4"></i>
+                        <h5 class="mb-3">Biblioteca de Recursos</h5>
+                        <p>Explora una biblioteca de PDFs, videos y guías especializadas para complementar tu estudio y
+                            reforzar tus conocimientos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Service End -->
+
+<!-- About Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
+                <div class="position-relative h-100">
+                    <img class="img-fluid position-absolute w-100 h-100"
+                        src="{{ url_for('static', filename='img/about.jpg') }}" alt="" style="object-fit: cover;">
+                </div>
+            </div>
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+                <h6 class="section-title bg-white text-start text-primary pe-3">Nosotros</h6>
+                <h1 class="mb-4">Bienvenidos a FCE-UCE</h1>
+                <p class="mb-4">En nuestra plataforma, ofrecemos una experiencia de aprendizaje diseñada específicamente
+                    para los estudiantes de la Facultad de Economía. Contamos con recursos interactivos, como ejercicios
+                    resueltos, videos explicativos y un chatbot especializado, para facilitar la comprensión de materias
+                    clave como Economía, Finanzas y Estadística.</p>
+                <p class="mb-4">Nuestro objetivo es ayudar a mejorar el rendimiento académico de los estudiantes,
+                    proporcionándoles acceso a contenidos de calidad y herramientas útiles que apoyen su aprendizaje.
+                </p>
+                <div class="row gy-2 gx-4 mb-4">
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Docentes Experimentados</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Acceso Total y Gratuito</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Materiales de Estudio
+                            Organizados</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Ejercicios Resueltos</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Videos Explicativos</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Chatbots Especializados</p>
+                    </div>
+                </div>
+                <a class="btn btn-primary py-3 px-5 mt-2" href="{{ url_for('app_bp.recursos') }}">Leer Más</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->
+
+<!-- Recursos Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">Recursos</h6>
+            <h1 class="mb-5">Recursos Populares</h1>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="course-item bg-light">
+                    <div class="position-relative overflow-hidden">
+                        <img class="img-fluid" src="{{ url_for('static', filename='img/course-1.jpg') }}"
+                            alt="Recursos de Economía">
+                        <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                            <a href="{{ url_for('app_bp.recursos', section='economia') }}"
+                                class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                                style="border-radius: 30px;">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4 pb-0">
+                        <h3 class="mb-0">Economía</h3>
+                        <div class="mb-3">
+                            <small>(Recursos)</small>
+                        </div>
+                        <h5 class="mb-4">PDFs, Videos, Ejercicios</h5>
+                    </div>
+                    <div class="d-flex border-top">
+                        <small class="flex-fill text-center border-end py-2"><i
+                                class="fa fa-book text-primary me-2"></i>PDFs</small>
+                        <small class="flex-fill text-center border-end py-2"><i
+                                class="fa fa-video text-primary me-2"></i>Videos</small>
+                        <small class="flex-fill text-center py-2"><i
+                                class="fa fa-file-alt text-primary me-2"></i>Ejercicios</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="course-item bg-light">
+                    <div class="position-relative overflow-hidden">
+                        <img class="img-fluid" src="{{ url_for('static', filename='img/course-2.jpg') }}"
+                            alt="Recursos de Finanzas">
+                        <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                            <a href="{{ url_for('app_bp.recursos', section='finanzas') }}"
+                                class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                                style="border-radius: 30px;">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4 pb-0">
+                        <h3 class="mb-0">Finanzas</h3>
+                        <div class="mb-3">
+                            <small>(Recursos)</small>
+                        </div>
+                        <h5 class="mb-4">PDFs, Videos, Ejercicios</h5>
+                    </div>
+                    <div class="d-flex border-top">
+                        <small class="flex-fill text-center border-end py-2"><i
+                                class="fa fa-book text-primary me-2"></i>PDFs</small>
+                        <small class="flex-fill text-center border-end py-2"><i
+                                class="fa fa-video text-primary me-2"></i>Videos</small>
+                        <small class="flex-fill text-center py-2"><i
+                                class="fa fa-file-alt text-primary me-2"></i>Ejercicios</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="course-item bg-light">
+                    <div class="position-relative overflow-hidden">
+                        <img class="img-fluid" src="{{ url_for('static', filename='img/course-3.jpg') }}"
+                            alt="Recursos de Estadística">
+                        <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                            <a href="{{ url_for('app_bp.recursos', section='estadistica') }}"
+                                class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                                style="border-radius: 30px;">Ver más</a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4 pb-0">
+                        <h3 class="mb-0">Estadística</h3>
+                        <div class="mb-3">
+                            <small>(Recursos)</small>
+                        </div>
+                        <h5 class="mb-4">PDFs, Videos, Ejercicios</h5>
+                    </div>
+                    <div class="d-flex border-top">
+                        <small class="flex-fill text-center border-end py-2"><i
+                                class="fa fa-book text-primary me-2"></i>PDFs</small>
+                        <small class="flex-fill text-center border-end py-2"><i
+                                class="fa fa-video text-primary me-2"></i>Videos</small>
+                        <small class="flex-fill text-center py-2"><i
+                                class="fa fa-file-alt text-primary me-2"></i>Ejercicios</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Recursos End -->
+
+<!--Script de eventos init -->
+<!-- Recarga la página si el usuario intenta acceder a una página anterior desde la caché, asegurando que la sesión se mantenga actualizada. -->
+<script>
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+</script>
+<!-- Script de eventos end -->
+
+
+{% endblock %}
